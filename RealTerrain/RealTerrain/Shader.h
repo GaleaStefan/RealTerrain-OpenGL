@@ -22,7 +22,7 @@ public:
 private:
 	void Load(const std::string& vertShaderPath, const std::string& fragShaderPath);
 
-	void LoadShader(const std::string& file, GLenum shaderType);
+	unsigned int LoadShader(const std::string& file, GLenum shaderType);
 
 	const char* ReadFromFile(const std::string& file);
 

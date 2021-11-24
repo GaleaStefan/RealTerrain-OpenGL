@@ -2,7 +2,8 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include "Shader.h"
+
+#include "Mesh.h"
 
 #pragma comment (lib, "glfw3dll.lib")
 #pragma comment (lib, "glew32.lib")
@@ -28,9 +29,21 @@ int main(int argc, char** argv)
 	glfwMakeContextCurrent(window);
 	glewInit();
 
-	Shader shader("PhongLight.vs", "PhongLight.fs");
+	std::vector<Vertex> verts{
+		{{0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, {0.f, 1.f, 0.f}, {0.f, 0.f}},
+		{{0.5f, 0.f, 0.f}, {0.f, 0.f, 0.f}, {0.f, 0.f, 1.f}, {0.f, 0.f}},
+		{{0.5f, 0.5f, 0.f}, {0.f, 0.f, 0.f}, {1.f, 0.f, 0.f}, {0.f, 0.f}}
+	};
+
+	std::vector<unsigned int> ind{ 0, 1, 2 };
+
+	Mesh triangle(verts, ind);
+	Shader basic("BasicShader.vertex.glsl", "BasicShader.fragment.glsl");
 
 	while (!glfwWindowShouldClose(window)) {
+		basic.Use();
+		triangle.Draw(basic);
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

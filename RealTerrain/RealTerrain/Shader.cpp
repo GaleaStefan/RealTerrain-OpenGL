@@ -34,16 +34,29 @@ void Shader::Load(const std::string& vertShaderPath, const std::string& fragShad
 
 	try
 	{
-		LoadShader(vertShaderPath, GL_VERTEX_SHADER);
-		LoadShader(fragShaderPath, GL_FRAGMENT_SHADER);
+		auto vert = LoadShader(vertShaderPath, GL_VERTEX_SHADER);
+		auto frag = LoadShader(fragShaderPath, GL_FRAGMENT_SHADER);
+		glAttachShader(programId, vert);
+		glAttachShader(programId, frag);
+		glLinkProgram(programId);
+		glDeleteShader(vert);
+		glDeleteShader(frag);
+
+		int success;
+		char* infoLog = new char[1024];
+		glGetProgramiv(programId, GL_LINK_STATUS, &success);
+		if (!success) {
+			glGetProgramInfoLog(programId, 1024, NULL, infoLog);
+			std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: PROGRAM" << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+		}
 	}
 	catch (std::exception(e))
 	{
-		std::cout << e.what();
+		std::cout << e.what() << '\n';
 	}
 }
 
-void Shader::LoadShader(const std::string& fileName, GLenum shaderType)
+unsigned int Shader::LoadShader(const std::string& fileName, GLenum shaderType)
 {
 	const char* codeBuffer = ReadFromFile(fileName);
 	unsigned int shaderId = 0;
@@ -51,14 +64,16 @@ void Shader::LoadShader(const std::string& fileName, GLenum shaderType)
 	try
 	{
 		CompileShader(codeBuffer, shaderId, shaderType);
-		glAttachShader(shaderId, programId);
-		glDeleteShader(shaderId);
+		delete[] codeBuffer;
+
+		return shaderId;
 	}
 	catch (std::exception& e)
 	{
-		std::cout << e.what() << " |Shader:" << fileName;
+		std::cout << e.what() << " |Shader:" << fileName << '\n';
 		throw;
 	}
+	
 }
 
 const char* Shader::ReadFromFile(const std::string& file)
@@ -89,7 +104,7 @@ void Shader::CompileShader(const char* code, unsigned int& newShaderId, GLenum s
 	if (!success)
 	{
 		glGetShaderInfoLog(newShaderId, 1024, NULL, infoLog);
-		std::cout << infoLog;
+		std::cout << infoLog << '\n';
 		throw std::exception("Shader compilation error");
 	}
 }
