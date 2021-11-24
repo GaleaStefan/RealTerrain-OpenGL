@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "Shader.h"
 
 #pragma comment (lib, "glfw3dll.lib")
 #pragma comment (lib, "glew32.lib")
@@ -26,6 +27,8 @@ int main(int argc, char** argv)
 
 	glfwMakeContextCurrent(window);
 	glewInit();
+
+	Shader shader("PhongLight.vs", "PhongLight.fs");
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwSwapBuffers(window);
