@@ -25,7 +25,7 @@ void Camera::Look(float x, float y)
 	if (firstMouseMove) {
 		lastX = x;
 		lastY = y;
-		firstMouseMove = true;
+		firstMouseMove = false;
 		return;
 	}
 

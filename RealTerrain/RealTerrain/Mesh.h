@@ -2,6 +2,7 @@
 #include "Vertex.h"
 #include "Shader.h"
 #include <vector>
+#include <memory>
 
 class Mesh
 {
@@ -13,7 +14,7 @@ public:
 
 	~Mesh() { Cleanup(); }
 
-	void Draw(Shader& shader) const;
+	void Draw(std::shared_ptr<Shader> shader) const;
 
 private:
 	void Setup();

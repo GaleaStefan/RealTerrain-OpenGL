@@ -1,6 +1,6 @@
 #include "Mesh.h"
 
-void Mesh::Draw(Shader& shader) const
+void Mesh::Draw(std::shared_ptr<Shader> shader) const
 {
 	glBindVertexArray(vertArrObj);
 	glDrawElements(GL_TRIANGLES, indicies.size(), GL_UNSIGNED_INT, 0);

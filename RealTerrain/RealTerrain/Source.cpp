@@ -13,9 +13,8 @@ int main(int argc, char** argv)
 {
 	try
 	{
-		std::unique_ptr<Application> app = std::make_unique<Application>(800, 600, "Game window", nullptr, nullptr);
-		app->SetActive();
-		app->BindCallbacks();
+		std::unique_ptr<Application> app = std::make_unique<Application>();
+		
 		app->Render();
 	}
 	catch (std::exception e)
