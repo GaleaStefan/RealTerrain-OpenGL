@@ -1,6 +1,8 @@
 #include "Application.h"
 #include <iostream>
 #include <exception>
+#include <fstream>
+#include "Model.h"
 
 //std::unordered_map<GLFWwindow*, Application*> Application::callbackLinker;
 
@@ -14,7 +16,7 @@ Application::Application()
 	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 	std::cout << mode->width << mode->height;
 
-	window = glfwCreateWindow(mode->width, mode->height, "Game window", glfwGetPrimaryMonitor(), nullptr);
+	window = glfwCreateWindow(mode->width, mode->height, "Game window", nullptr, nullptr);
 	
 	if (!window)
 		throw std::exception("Could not create window");
@@ -59,16 +61,13 @@ void Application::Render()
 
 	deltaTime = 0;
 	lastFrame = 0;
+	totalTime = 0;
 
-	std::vector<Vertex> verts{
-		{{0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, {0.f, 1.f, 0.f}, {0.f, 0.f}},
-		{{0.5f, 0.f, 0.f}, {0.f, 0.f, 0.f}, {0.f, 0.f, 1.f}, {0.f, 0.f}},
-		{{0.5f, 0.5f, 0.f}, {0.f, 0.f, 0.f}, {1.f, 0.f, 0.f}, {0.f, 0.f}}
-	};
-
-	std::vector<unsigned int> ind{ 0, 1, 2 };
-
-	std::shared_ptr<Mesh> triangle = std::make_shared<Mesh>(verts, ind);
+	std::ifstream test("Models/test.obj");
+	auto mesh = util::ParseObj(test);
+	std::vector<std::shared_ptr<Mesh>> modelMeshes;
+	modelMeshes.push_back(mesh);
+	auto model = std::make_shared<Model>(modelMeshes);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -78,13 +77,16 @@ void Application::Render()
 		double currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
+		totalTime += deltaTime;
+
+		model->position = glm::vec3(glm::sin(totalTime), glm::cos(totalTime), 0.f);
 
 		basicShader->Use();
-		basicShader->SetMat4("model", glm::mat4(1));
+		basicShader->SetMat4("model", model->GetModelMatrix());
 		basicShader->SetMat4("view", playerCam->GetViewMatrix());
 		basicShader->SetMat4("projection", playerCam->GetProjectionMatrix());
 
-		triangle->Draw(basicShader);
+		model->Draw(basicShader);
 
 		ProcessKeyboardInput();
 		glfwSwapBuffers(window);

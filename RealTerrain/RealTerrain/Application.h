@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "Shader.h"
 #include "Mesh.h"
+#include "GLUtils.h"
 
 class Application
 {
@@ -33,5 +34,6 @@ private:
 
 	double deltaTime;
 	double lastFrame;
+	double totalTime;
 };
 

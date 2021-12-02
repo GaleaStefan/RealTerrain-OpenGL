@@ -1,7 +1,5 @@
 #include <iostream>
 
-#include "Mesh.h"
-#include "GLUtils.h"
 #include "Application.h"
 
 #pragma comment (lib, "glfw3dll.lib")
@@ -13,6 +11,7 @@ int main(int argc, char** argv)
 {
 	try
 	{
+		
 		std::unique_ptr<Application> app = std::make_unique<Application>();
 		
 		app->Render();
