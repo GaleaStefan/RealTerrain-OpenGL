@@ -5,14 +5,18 @@
 #include "TerrainChunk.h"
 #include "Shader.h"
 #include "HeightMap.h"
+#include "Vertex.h"
+#include "GLUtils.h"
+
+#include <unordered_map>
 
 class Terrain
 {
 public:
-	void Render(std::shared_ptr<Shader> shader, const glm::vec3& from) const;
+	void Draw(std::shared_ptr<Shader> shader, const glm::vec3& from) const;
 	void Generate(const HeightMap& map);
 
 private:
-	std::vector<TerrainChunk> chunks;
+	std::unordered_map<std::pair<int, int>, std::shared_ptr<TerrainChunk>, util::pair_hash> chunks;
 };
 

@@ -3,6 +3,8 @@
 #include <exception>
 #include <fstream>
 #include "Model.h"
+#include "HeightMap.h"
+#include "Terrain.h"
 
 Application::Application()
 {
@@ -54,17 +56,25 @@ void Application::BindCallbacks()
 
 void Application::Render()
 {
-	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	util::GlEnable(GL_CULL_FACE);
 
 	deltaTime = 0;
 	lastFrame = 0;
 	totalTime = 0;
 
-	std::ifstream test("Models/test2.obj");
+	/*std::ifstream test("Models/test.obj");
 	auto mesh = util::ParseObj(test);
 	std::vector<std::shared_ptr<Mesh>> modelMeshes;
 	modelMeshes.push_back(mesh);
-	auto model = std::make_shared<Model>(modelMeshes);
+	auto model = std::make_shared<Model>(modelMeshes);*/
+
+	HeightMap hmap;
+	hmap.LoadFrom("heightmap");
+	Terrain terrain;
+	terrain.Generate(hmap);
+
+	playerCam->camSpeed = 30.f;
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -76,14 +86,12 @@ void Application::Render()
 		lastFrame = currentFrame;
 		totalTime += deltaTime;
 
-		model->position = glm::vec3(glm::sin(totalTime), glm::cos(totalTime), 0.f);
-
 		basicShader->Use();
-		basicShader->SetMat4("model", model->GetModelMatrix());
+		basicShader->SetMat4("model", glm::mat4(1));
 		basicShader->SetMat4("view", playerCam->GetViewMatrix());
 		basicShader->SetMat4("projection", playerCam->GetProjectionMatrix());
 
-		model->Draw(basicShader);
+		terrain.Draw(basicShader, glm::vec3{ 0.f ,0.f, 0.f });
 
 		ProcessKeyboardInput();
 		glfwSwapBuffers(window);

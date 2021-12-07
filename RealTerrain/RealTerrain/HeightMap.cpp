@@ -7,10 +7,11 @@ void HeightMap::LoadFrom(const std::string& name)
 {
 	std::string image = name + ".png";
 	std::ifstream config(name + ".cfg");
-	verticalBounds = ReadTerrainVerticalBounds(config);
+	ReadTerrainConfig(config);
 
 	int channelsCount = 0;
-	uint8_t* pixels = stbi_load(image.c_str(), &size.first, &size.second, &channelsCount, 0);
+	stbi_set_flip_vertically_on_load(true);
+	uint8_t* data = stbi_load(image.c_str(), &size.first, &size.second, &channelsCount, 0);
 
 	heightMap.resize(size.first);
 	for (size_t x = 0; x < size.first; x++)
@@ -19,28 +20,29 @@ void HeightMap::LoadFrom(const std::string& name)
 
 		for (size_t y = 0; y < size.second; y++)
 		{
-			heightMap[x][y] = PixelToHeight(pixels[size.first * x + y], verticalBounds);
+			uint8_t grayScale = data[(x * size.second + y) * channelsCount];
+			heightMap[x][y] = PixelToHeight(grayScale) - verticalBounds.first;
 		}
 	}
 
-	delete[] pixels;
+	delete[] data;
 }
 
-std::pair<float, float> HeightMap::ReadTerrainVerticalBounds(std::ifstream& stream)
+void HeightMap::ReadTerrainConfig(std::ifstream& stream)
 {
-	std::pair<float, float> bounds;
-
+	constexpr float TO_METERS = 10.f;
 	std::string line;
 	std::getline(stream, line);
-	bounds.first = std::stof(line.substr(line.find('=') + 1));
+	scale = std::stof(line.substr(line.find('=') + 1));
 
 	std::getline(stream, line);
-	bounds.second = std::stof(line.substr(line.find('=') + 1));
+	verticalBounds.first = std::stof(line.substr(line.find('=') + 1)) * scale * TO_METERS;
 
-	return bounds;
+	std::getline(stream, line);
+	verticalBounds.second = std::stof(line.substr(line.find('=') + 1)) * scale * TO_METERS;
 }
 
-float HeightMap::PixelToHeight(uint8_t pixel, const std::pair<float, float>& bounds)
+float HeightMap::PixelToHeight(uint8_t pixel)
 {
-	return glm::mix(bounds.first, bounds.second, (float)pixel / 255.f);
+	return glm::mix(verticalBounds.first, verticalBounds.second, (float)pixel / 255.f);
 }

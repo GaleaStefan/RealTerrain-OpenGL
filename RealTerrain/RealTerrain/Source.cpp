@@ -9,14 +9,12 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "../../_external/stb/stb_image.h"
 #include "HeightMap.h"
+#include "Terrain.h"
 
 int main(int argc, char** argv)
 {
 	try
 	{
-		HeightMap hmap;
-		hmap.LoadFrom("heightmap");
-		
 		std::unique_ptr<Application> app = std::make_unique<Application>();
 		app->Render();
 	}

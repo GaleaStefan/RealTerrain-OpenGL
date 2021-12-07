@@ -88,5 +88,8 @@
     <None Include="BasicShader.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="heightmap.cfg">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

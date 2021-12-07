@@ -10,12 +10,13 @@ public:
 	void LoadFrom(const std::string& name);
 
 private:
-	std::pair<float, float> ReadTerrainVerticalBounds(std::ifstream& stream);
-	float PixelToHeight(uint8_t pixel, const std::pair<float, float>& bounds);
+	void ReadTerrainConfig(std::ifstream& stream);
+	float PixelToHeight(uint8_t pixel);
 	
-private:
+public:
 	std::vector<std::vector<float>> heightMap;
 	std::pair<float, float> verticalBounds;
 	std::pair<int, int> size;
+	float scale;
 };
 
