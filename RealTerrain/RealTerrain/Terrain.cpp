@@ -48,29 +48,29 @@ void Terrain::Generate(const HeightMap& map)
 
 	constexpr int MAX_CHUNK_SIZE = 32;
 
-	for (size_t chunkCol = 0; chunkCol < map.size.second / MAX_CHUNK_SIZE; chunkCol++)
+	for (int chunkCol = 0; chunkCol < map.size.second / MAX_CHUNK_SIZE; chunkCol++)
 	{
-		for (size_t chunkRow = 0; chunkRow < map.size.first / MAX_CHUNK_SIZE; chunkRow++)
+		for (int chunkRow = 0; chunkRow < map.size.first / MAX_CHUNK_SIZE; chunkRow++)
 		{
 			std::vector<Vertex> chunkVertices;
-			std::tuple<size_t, size_t, size_t, size_t> chunkBounds
-				= std::make_tuple<size_t, size_t, size_t, size_t>
+			std::tuple<int, int, int, int> chunkBounds
+				= std::make_tuple<int, int, int, int>
 				(
-					(size_t)MAX_CHUNK_SIZE * chunkRow,
-					(size_t)std::min<int>(map.size.first, MAX_CHUNK_SIZE * (chunkRow + 1)),
-					(size_t)MAX_CHUNK_SIZE * chunkCol,
-					(size_t)std::min<int>(map.size.first, MAX_CHUNK_SIZE * (chunkCol + 1))
+					MAX_CHUNK_SIZE * chunkRow,
+					(int)std::min(map.size.first, MAX_CHUNK_SIZE * (chunkRow + 1)),
+					MAX_CHUNK_SIZE * chunkCol,
+					(int)std::min(map.size.first, MAX_CHUNK_SIZE * (chunkCol + 1))
 					);
 
-			for (size_t x = std::get<0>(chunkBounds); x < std::get<1>(chunkBounds); x++)
+			for (int x = std::get<0>(chunkBounds); x < std::get<1>(chunkBounds); x++)
 			{
-				for (size_t z = std::get<2>(chunkBounds); z < std::get<3>(chunkBounds); z++)
+				for (int z = std::get<2>(chunkBounds); z < std::get<3>(chunkBounds); z++)
 				{
 					chunkVertices.push_back(vertices[x * map.size.second + z]);
 				}
 			}
 
-			chunks[std::make_pair<int, int>((int)chunkRow, (int)chunkCol)] 
+			chunks[std::make_pair(chunkRow, chunkCol)]
 				= TerrainChunk::CreateFrom(chunkVertices, 
 					{ std::get<1>(chunkBounds) - std::get<0>(chunkBounds), 
 					std::get<3>(chunkBounds) - std::get<2>(chunkBounds) });

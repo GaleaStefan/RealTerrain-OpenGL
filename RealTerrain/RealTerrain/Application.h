@@ -30,6 +30,9 @@ private:
 	std::shared_ptr<Camera> playerCam;
 	std::shared_ptr<Shader> basicShader;
 
+	int width;
+	int height;
+
 	double deltaTime;
 	double lastFrame;
 	double totalTime;

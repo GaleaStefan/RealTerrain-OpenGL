@@ -53,9 +53,9 @@ public:
 	float camSpeed = DEF_CAM_SPEED;
 	float sensivity = DEF_SENSIVITY;
 
-private:
 	float lastX;
 	float lastY;
+private:
 
 	bool firstMouseMove = true;
 

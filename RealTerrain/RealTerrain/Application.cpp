@@ -14,12 +14,14 @@ Application::Application()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-	std::cout << mode->width << mode->height;
 
 	window = glfwCreateWindow(mode->width, mode->height, "Game window", nullptr, nullptr);
 	
 	if (!window)
 		throw std::exception("Could not create window");
+
+	width = mode->width;
+	height = mode->height;
 
 	glfwMakeContextCurrent(window);
 	glfwSetWindowUserPointer(window, (void*)this);
@@ -101,19 +103,38 @@ void Application::Render()
 
 void Application::OnFrameBufferResize(int newWidth, int newHeight)
 {
-	std::cout << "Frame buffer resize:" << newWidth << " " << newHeight << "\n";
 	playerCam->Reshape(newWidth, newHeight);
+	width = newWidth;
+	height = newHeight;
 }
 
 void Application::OnMouseMove(float x, float y)
 {
-	std::cout << "Mouse move:" << x << " " << y << "\n";
+	float warpPoint = 30.f;
+	auto warp = [warpPoint](float current, float size)
+	{
+		if (current <= warpPoint)
+			return size - 2 * warpPoint;
+
+		if (current >= size - warpPoint)
+			return warpPoint * 2;
+
+		return current;
+	};
+
+	float newX = warp(x, width);
+
+	if (x != newX)
+	{
+		playerCam->lastX = newX;
+		glfwSetCursorPos(window, newX, y);
+		return;
+	}
 	playerCam->Look(x, y);
 }
 
 void Application::OnScroll(double x, double y)
 {
-	std::cout << "Mouse scroll:" << x << " " << y << "\n";
 	playerCam->Zoom(y);
 }
 
