@@ -24,8 +24,6 @@ public:
 	void OnScroll(double x, double y);
 	void ProcessKeyboardInput();
 
-//private:
-//	static std::unordered_map<GLFWwindow*, Application*> callbackLinker;
 private:
 	GLFWwindow* window = nullptr;
 

@@ -40,7 +40,7 @@ void Camera::Look(float x, float y)
 		glm::abs(yOffset) <= MIN_OFFSET)
 		return;
 
-	Rotate(xOffset, yOffset);
+	Rotate(xOffset * sensivity, yOffset * sensivity);
 }
 
 void Camera::Zoom(float value)
@@ -73,6 +73,8 @@ void Camera::Initialize(int screenWidth, int screenHeight, const glm::vec3 pos)
 	lastX = screenWidth / 2.f;
 	lastY = screenHeight / 2.f;
 
+	firstMouseMove = true;
+
 	position = pos;
 	worldUp = glm::vec3(0.f, 1.f, 0.f);
 
@@ -86,10 +88,12 @@ void Camera::RecalculateLocalVectors()
 
 	forward = glm::vec3
 	{
-		glm::cos(yawRadians) * glm::sin(pitchRadians),
+		glm::cos(yawRadians) * glm::cos(pitchRadians),
 		glm::sin(pitchRadians),
 		glm::sin(yawRadians) * glm::cos(pitchRadians)
 	};
+
+	forward = glm::normalize(forward);
 
 	right = glm::normalize(glm::cross(forward, worldUp));
 	up = glm::normalize(glm::cross(right, forward));

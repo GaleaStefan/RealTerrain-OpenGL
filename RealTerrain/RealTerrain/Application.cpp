@@ -4,8 +4,6 @@
 #include <fstream>
 #include "Model.h"
 
-//std::unordered_map<GLFWwindow*, Application*> Application::callbackLinker;
-
 Application::Application()
 {
 	glfwInit();
@@ -41,7 +39,7 @@ void Application::BindCallbacks()
 	auto mouseMoveCallback = [](GLFWwindow* window, double x, double y)
 	{
 		Application* application = static_cast<Application*>(glfwGetWindowUserPointer(window));
-		application->OnMouseMove(x, y);
+		application->OnMouseMove((float)x, (float)y);
 	};
 
 	auto scrollCallback = [](GLFWwindow* window, double x, double y)
@@ -49,7 +47,6 @@ void Application::BindCallbacks()
 		Application* application = static_cast<Application*>(glfwGetWindowUserPointer(window));
 		application->OnScroll(x, y);
 	};
-
 	glfwSetFramebufferSizeCallback(window, frameBuffResizeCallback);
 	glfwSetCursorPosCallback(window, mouseMoveCallback);
 	glfwSetScrollCallback(window, scrollCallback);
@@ -57,13 +54,13 @@ void Application::BindCallbacks()
 
 void Application::Render()
 {
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
 	deltaTime = 0;
 	lastFrame = 0;
 	totalTime = 0;
 
-	std::ifstream test("Models/test.obj");
+	std::ifstream test("Models/test2.obj");
 	auto mesh = util::ParseObj(test);
 	std::vector<std::shared_ptr<Mesh>> modelMeshes;
 	modelMeshes.push_back(mesh);

@@ -13,7 +13,7 @@ private:
 	constexpr static float MIN_FOV = 30.f;
 	constexpr static float MAX_FOV = 120.f;
 	constexpr static float DEF_CAM_SPEED = 2.f;
-	constexpr static float DEF_SENSIVITY = .00001f;
+	constexpr static float DEF_SENSIVITY = .1f;
 
 public:
 	enum class MoveDirection

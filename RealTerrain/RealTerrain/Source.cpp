@@ -6,14 +6,18 @@
 #pragma comment (lib, "glew32.lib")
 #pragma comment (lib, "OpenGL32.lib")
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "../../_external/stb/stb_image.h"
+#include "HeightMap.h"
 
 int main(int argc, char** argv)
 {
 	try
 	{
+		HeightMap hmap;
+		hmap.LoadFrom("heightmap");
 		
 		std::unique_ptr<Application> app = std::make_unique<Application>();
-		
 		app->Render();
 	}
 	catch (std::exception e)
