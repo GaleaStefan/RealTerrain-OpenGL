@@ -10,8 +10,8 @@ void HeightMap::LoadFrom(const std::string& name)
 	ReadTerrainConfig(config);
 
 	int channelsCount = 0;
-	stbi_set_flip_vertically_on_load(true);
-	uint8_t* data = stbi_load(image.c_str(), &size.first, &size.second, &channelsCount, 0);
+	stbi_set_flip_vertically_on_load(false);
+	uint8_t* data = stbi_load(image.c_str(), &size.second, &size.first, &channelsCount, 0);
 
 	heightMap.resize(size.first);
 	for (size_t x = 0; x < size.first; x++)

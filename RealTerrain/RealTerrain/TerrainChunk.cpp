@@ -9,9 +9,9 @@ std::shared_ptr<TerrainChunk> TerrainChunk::CreateFrom(const std::vector<Vertex>
 
     std::vector<unsigned int> indicies;
 
-	for (size_t j = 0; j < chunkSize.second - 1; j++)
+	for (size_t i = 0; i < chunkSize.first - 1; i++)
 	{
-		for (size_t i = 0; i < chunkSize.first - 1; i++)
+		for (size_t j = 0; j < chunkSize.second - 1; j++)
 		{
 			indicies.push_back(matToVec({ i ,j }));
 			indicies.push_back(matToVec({ i, j + 1 }));

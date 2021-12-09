@@ -59,7 +59,8 @@ void Application::BindCallbacks()
 void Application::Render()
 {
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-	util::GlEnable(GL_CULL_FACE);
+	util::GlEnable(GL_CULL_FACE, GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 
 	deltaTime = 0;
 	lastFrame = 0;
@@ -82,7 +83,7 @@ void Application::Render()
 	{
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-
+		glClear(GL_DEPTH_BUFFER_BIT);
 		double currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;

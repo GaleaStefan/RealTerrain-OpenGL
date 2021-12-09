@@ -25,10 +25,11 @@ void Terrain::Generate(const HeightMap& map)
 	{
 		for (size_t z = 0; z < map.size.second; z++)
 		{
+			float heightNormalized = map.heightMap[x][z] / (map.verticalBounds.second - map.verticalBounds.first);
 			vertices.push_back({
 				{x - center.first, map.heightMap[x][z], z - center.second},
 				{1.f, 1.f, 1.f},
-				{1.f, 1.f, 1.f},
+				{heightNormalized, 1.f - heightNormalized, 1.f},
 				{(float)x / (float)map.size.first, (float)z / (float)map.size.second} });
 		}
 	}
@@ -38,28 +39,28 @@ void Terrain::Generate(const HeightMap& map)
 	{
 		for (size_t z = 0; z < map.size.second; z++)
 		{
-			float heightLeft = getHeight(x - 1, z, map);
-			float heightRight = getHeight(x + 1, z, map);
-			float heightTop = getHeight(x, z - 1, map);
-			float heightBottom = getHeight(x, z + 1, map);
-			vertices[x * map.size.first + z].normal = glm::normalize(glm::vec3{heightRight - heightLeft, heightTop - heightBottom, 2.f});
+			float heightLeft = getHeight(x, z - 1, map);
+			float heightRight = getHeight(x, z + 1, map);
+			float heightTop = getHeight(x - 1, z, map);
+			float heightBottom = getHeight(x + 1, z, map);
+			vertices[x * map.size.second + z].normal = glm::normalize(glm::vec3{heightRight - heightLeft, heightTop - heightBottom, 2.f});
 		}
 	}
 
 	constexpr int MAX_CHUNK_SIZE = 32;
 
-	for (int chunkCol = 0; chunkCol < map.size.second / MAX_CHUNK_SIZE; chunkCol++)
+	for (int chunkRow = 0; chunkRow < map.size.first / MAX_CHUNK_SIZE; chunkRow++)
 	{
-		for (int chunkRow = 0; chunkRow < map.size.first / MAX_CHUNK_SIZE; chunkRow++)
+		for (int chunkCol = 0; chunkCol < map.size.second / MAX_CHUNK_SIZE; chunkCol++)
 		{
 			std::vector<Vertex> chunkVertices;
 			std::tuple<int, int, int, int> chunkBounds
 				= std::make_tuple<int, int, int, int>
 				(
-					MAX_CHUNK_SIZE * chunkRow,
+					glm::clamp(MAX_CHUNK_SIZE * chunkRow - 1, 0, map.size.first),
 					(int)std::min(map.size.first, MAX_CHUNK_SIZE * (chunkRow + 1)),
-					MAX_CHUNK_SIZE * chunkCol,
-					(int)std::min(map.size.first, MAX_CHUNK_SIZE * (chunkCol + 1))
+					glm::clamp(MAX_CHUNK_SIZE * chunkCol - 1, 0, map.size.second),
+					(int)std::min(map.size.second, MAX_CHUNK_SIZE * (chunkCol + 1))
 					);
 
 			for (int x = std::get<0>(chunkBounds); x < std::get<1>(chunkBounds); x++)
