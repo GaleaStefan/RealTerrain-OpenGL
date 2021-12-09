@@ -19,7 +19,8 @@ public:
 private:
 	void Setup();
 	void Cleanup();
-private:
+
+public:
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indicies;
 	unsigned int vertArrObj, vertBuffObj, elemBuffObj;

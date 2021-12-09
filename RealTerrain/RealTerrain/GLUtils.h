@@ -43,5 +43,7 @@ namespace util
 			return std::hash<T1>()(pair.first) ^ std::hash<T2>()(pair.second);
 		}
 	};
+
+	float BarryCentric(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, const glm::vec2& pos);
 }
 

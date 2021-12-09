@@ -77,7 +77,8 @@ void Application::Render()
 	Terrain terrain;
 	terrain.Generate(hmap);
 
-	playerCam->camSpeed = 30.f;
+	playerCam->camSpeed = 5.f;
+	playerCam->position = { 10.f, 0.f, 10.f };
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -93,6 +94,12 @@ void Application::Render()
 		basicShader->SetMat4("model", glm::mat4(1));
 		basicShader->SetMat4("view", playerCam->GetViewMatrix());
 		basicShader->SetMat4("projection", playerCam->GetProjectionMatrix());
+
+		auto& playerPos = playerCam->position;
+		float terrainHeight = terrain.HeightAt(playerPos.x, playerPos.z);
+
+		if (playerPos.y < terrainHeight)
+			playerPos.y = terrainHeight + 3.f;
 
 		terrain.Draw(basicShader, glm::vec3{ 0.f ,0.f, 0.f });
 

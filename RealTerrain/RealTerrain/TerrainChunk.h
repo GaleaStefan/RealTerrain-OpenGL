@@ -13,5 +13,9 @@ public:
 	void Draw(std::shared_ptr<Shader> shader);
 private:
 	std::shared_ptr<Mesh> mesh;
+	std::pair<int, int> size;
+
+private:
+	friend class Terrain;
 };
 

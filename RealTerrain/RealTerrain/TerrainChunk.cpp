@@ -2,6 +2,7 @@
 
 std::shared_ptr<TerrainChunk> TerrainChunk::CreateFrom(const std::vector<Vertex>& vertices, const std::pair<int, int> chunkSize)
 {
+
 	auto matToVec = [&chunkSize](const std::pair<size_t, size_t>& pos) -> size_t
 	{
 		return pos.first * chunkSize.second + pos.second;
@@ -25,7 +26,7 @@ std::shared_ptr<TerrainChunk> TerrainChunk::CreateFrom(const std::vector<Vertex>
 
 	std::shared_ptr<TerrainChunk> terrainChunk = std::make_shared<TerrainChunk>();
 	terrainChunk->mesh = std::make_shared<Mesh>(vertices, indicies);
-
+	terrainChunk->size = chunkSize;
 	return terrainChunk;
 }
 

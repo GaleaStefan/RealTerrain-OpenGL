@@ -8,7 +8,11 @@ void Terrain::Draw(std::shared_ptr<Shader> shader, const glm::vec3& from) const
 
 void Terrain::Generate(const HeightMap& map)
 {
-	std::pair<float, float> center{ map.size.first / 2.f, map.size.second / 2.f };
+	//std::pair<float, float> center{ map.size.first / 2.f, map.size.second / 2.f };
+	position = glm::vec3{ 0.f, 0.f, 0.f };
+	chunkSize = 32;
+	terrainSize = map.size.first;
+
 	std::vector<Vertex> vertices;
 	vertices.reserve(map.size.first * map.size.second);
 
@@ -27,7 +31,7 @@ void Terrain::Generate(const HeightMap& map)
 		{
 			float heightNormalized = map.heightMap[x][z] / (map.verticalBounds.second - map.verticalBounds.first);
 			vertices.push_back({
-				{x - center.first, map.heightMap[x][z], z - center.second},
+				{x, map.heightMap[x][z], z},
 				{1.f, 1.f, 1.f},
 				{heightNormalized, 1.f - heightNormalized, 1.f},
 				{(float)x / (float)map.size.first, (float)z / (float)map.size.second} });
@@ -47,20 +51,18 @@ void Terrain::Generate(const HeightMap& map)
 		}
 	}
 
-	constexpr int MAX_CHUNK_SIZE = 32;
-
-	for (int chunkRow = 0; chunkRow < map.size.first / MAX_CHUNK_SIZE; chunkRow++)
+	for (int chunkRow = 0; chunkRow < map.size.first / chunkSize; chunkRow++)
 	{
-		for (int chunkCol = 0; chunkCol < map.size.second / MAX_CHUNK_SIZE; chunkCol++)
+		for (int chunkCol = 0; chunkCol < map.size.second / chunkSize; chunkCol++)
 		{
 			std::vector<Vertex> chunkVertices;
 			std::tuple<int, int, int, int> chunkBounds
 				= std::make_tuple<int, int, int, int>
 				(
-					glm::clamp(MAX_CHUNK_SIZE * chunkRow - 1, 0, map.size.first),
-					(int)std::min(map.size.first, MAX_CHUNK_SIZE * (chunkRow + 1)),
-					glm::clamp(MAX_CHUNK_SIZE * chunkCol - 1, 0, map.size.second),
-					(int)std::min(map.size.second, MAX_CHUNK_SIZE * (chunkCol + 1))
+					glm::clamp(chunkSize * chunkRow - 1, 0, map.size.first),
+					(int)std::min(map.size.first, chunkSize * (chunkRow + 1)),
+					glm::clamp(chunkSize * chunkCol - 1, 0, map.size.second),
+					(int)std::min(map.size.second, chunkSize * (chunkCol + 1))
 					);
 
 			for (int x = std::get<0>(chunkBounds); x < std::get<1>(chunkBounds); x++)
@@ -78,4 +80,42 @@ void Terrain::Generate(const HeightMap& map)
 		}
 	}
 
+}
+
+float Terrain::HeightAt(float worldX, float worldZ) const
+{
+	float offsetX = worldX - position.x;
+	float offsetZ = worldZ - position.z;
+
+	if (offsetX < 0 || offsetX >= terrainSize || offsetZ < 0 || offsetZ >= terrainSize)
+		return 0;
+
+	int chunkX = glm::ceil(offsetX) / chunkSize;
+	int chunkZ = glm::ceil(offsetZ) / chunkSize;
+
+	int gridX = (int)(offsetX) % chunkSize;
+	int gridZ = (int)(offsetZ) % chunkSize;
+
+	float whole;
+	float xCoord = glm::modf(offsetX, whole);
+	float zCoord = glm::modf(offsetZ, whole);
+
+	auto chunk = chunks.at({ chunkX, chunkZ });
+	auto chunkSize = chunk->size;
+
+	std::vector<float> corners = {
+		chunk->mesh->vertices[gridX * chunkSize.second + gridZ].position.y,
+		chunk->mesh->vertices[gridX * chunkSize.second + gridZ + 1].position.y,
+		chunk->mesh->vertices[(gridX + 1) * chunkSize.second + gridZ].position.y,
+		chunk->mesh->vertices[(gridX + 1) * chunkSize.second + gridZ + 1].position.y
+	};
+
+	if (xCoord <= (1 - zCoord))
+		return util::BarryCentric({ 0, corners[0], 0 },
+			{ 1, corners[2], 0 },
+			{ 0, corners[1], 1 }, { xCoord, zCoord });
+
+	return util::BarryCentric({ 1, corners[2], 0 },
+		{ 1, corners[3], 1 },
+		{ 0, corners[1], 1 }, { xCoord, zCoord });
 }

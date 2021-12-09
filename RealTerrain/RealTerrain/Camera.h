@@ -55,6 +55,8 @@ public:
 
 	float lastX;
 	float lastY;
+
+	glm::vec3 position;
 private:
 
 	bool firstMouseMove = true;
@@ -62,7 +64,6 @@ private:
 	int screenWidth;
 	int screenHeight;
 
-	glm::vec3 position;
 	glm::vec3 forward;
 	glm::vec3 right;
 	glm::vec3 up;
