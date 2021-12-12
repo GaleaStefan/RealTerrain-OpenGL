@@ -4,7 +4,7 @@
 #include <fstream>
 #include "Model.h"
 #include "HeightMap.h"
-#include "Terrain.h"
+#include <ext/matrix_transform.hpp>
 
 Application::Application()
 {
@@ -16,7 +16,7 @@ Application::Application()
 	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
 	window = glfwCreateWindow(mode->width, mode->height, "Game window", nullptr, nullptr);
-	
+
 	if (!window)
 		throw std::exception("Could not create window");
 
@@ -28,8 +28,14 @@ Application::Application()
 	BindCallbacks();
 	glewInit();
 
-	playerCam = std::make_shared<Camera>(mode->width, mode->height, glm::vec3{ 0,0,1.f });
+	playerCam = std::make_shared<Camera>(mode->width, mode->height, glm::vec3{ 0, 0, 1.f });
 	basicShader = std::make_shared<Shader>("BasicShader.vert", "BasicShader.frag");
+
+	HeightMap hmap;
+	hmap.LoadFrom("heightmap");
+
+	terrain = std::make_shared<Terrain>();
+	terrain->Generate(hmap);
 }
 
 void Application::BindCallbacks()
@@ -61,49 +67,51 @@ void Application::Render()
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	util::GlEnable(GL_CULL_FACE, GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
+	glShadeModel(GL_SMOOTH);
 
 	deltaTime = 0;
 	lastFrame = 0;
 	totalTime = 0;
 
-	/*std::ifstream test("Models/test.obj");
-	auto mesh = util::ParseObj(test);
-	std::vector<std::shared_ptr<Mesh>> modelMeshes;
-	modelMeshes.push_back(mesh);
-	auto model = std::make_shared<Model>(modelMeshes);*/
-
-	HeightMap hmap;
-	hmap.LoadFrom("heightmap");
-	Terrain terrain;
-	terrain.Generate(hmap);
-
-	playerCam->camSpeed = 5.f;
+	playerCam->camSpeed = 50.f;
 	playerCam->position = { 10.f, 0.f, 10.f };
+
+	DiffuseLight testLight{ {500.f, 100.f, 500.f}, {1.f, 1.f, 1.f} };
 
 	while (!glfwWindowShouldClose(window))
 	{
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClear(GL_DEPTH_BUFFER_BIT);
+
 		double currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 		totalTime += deltaTime;
 
+		auto initialPos = playerCam->GetPosition();
+		ProcessKeyboardInput();
+
+		auto& playerPos = playerCam->position;
+		float terrainHeight = terrain->HeightAt(playerPos.x, playerPos.z);
+
+		if (initialPos.y < terrainHeight)
+			initialPos.y = terrainHeight + 2.f;
+
+		if (playerPos.y < initialPos.y)
+			playerPos.y = initialPos.y;
+
 		basicShader->Use();
+		basicShader->SetVec3("lightPosition", testLight.position);
+		basicShader->SetVec3("lightColor", testLight.color);
+		basicShader->SetVec3("objectColor", { 1.f, 1.0f, 1.f });
+
 		basicShader->SetMat4("model", glm::mat4(1));
 		basicShader->SetMat4("view", playerCam->GetViewMatrix());
 		basicShader->SetMat4("projection", playerCam->GetProjectionMatrix());
 
-		auto& playerPos = playerCam->position;
-		float terrainHeight = terrain.HeightAt(playerPos.x, playerPos.z);
+		terrain->Draw(basicShader, glm::vec3{ 0.f ,0.f, 0.f });
 
-		if (playerPos.y < terrainHeight)
-			playerPos.y = terrainHeight + 3.f;
-
-		terrain.Draw(basicShader, glm::vec3{ 0.f ,0.f, 0.f });
-
-		ProcessKeyboardInput();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

@@ -32,8 +32,8 @@ void Terrain::Generate(const HeightMap& map)
 			float heightNormalized = map.heightMap[x][z] / (map.verticalBounds.second - map.verticalBounds.first);
 			vertices.push_back({
 				{x, map.heightMap[x][z], z},
-				{1.f, 1.f, 1.f},
 				{heightNormalized, 1.f - heightNormalized, 1.f},
+				{1.f, 1.f, 1.f},
 				{(float)x / (float)map.size.first, (float)z / (float)map.size.second} });
 		}
 	}
@@ -41,13 +41,16 @@ void Terrain::Generate(const HeightMap& map)
 	// Calculate normals
 	for (size_t x = 0; x < map.size.first; x++)
 	{
+		// glm::normalize(glm::vec3((heightU - heightD), (heightU - heightD) * (heightR - heightL), (heightR - heightL)));
 		for (size_t z = 0; z < map.size.second; z++)
 		{
 			float heightLeft = getHeight(x, z - 1, map);
 			float heightRight = getHeight(x, z + 1, map);
 			float heightTop = getHeight(x - 1, z, map);
 			float heightBottom = getHeight(x + 1, z, map);
-			vertices[x * map.size.second + z].normal = glm::normalize(glm::vec3{heightRight - heightLeft, heightTop - heightBottom, 2.f});
+
+			int index = x * map.size.second + z;
+			vertices[index].normal = glm::normalize(glm::vec3{heightBottom - heightTop,  2.f, heightLeft - heightRight});
 		}
 	}
 

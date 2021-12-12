@@ -11,12 +11,14 @@ public:
 
 private:
 	void ReadTerrainConfig(std::ifstream& stream);
-	float PixelToHeight(uint8_t pixel);
+	void SmoothTerrain(float factor);
 	
 public:
 	std::vector<std::vector<float>> heightMap;
 	std::pair<float, float> verticalBounds;
 	std::pair<int, int> size;
 	float scale;
+	float smoothFactor;
+	int smoothSteps;
 };
 

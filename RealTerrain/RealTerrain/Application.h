@@ -9,6 +9,8 @@
 #include "Shader.h"
 #include "Mesh.h"
 #include "GLUtils.h"
+#include "Terrain.h"
+#include "Lights.h"
 
 class Application
 {
@@ -29,6 +31,7 @@ private:
 
 	std::shared_ptr<Camera> playerCam;
 	std::shared_ptr<Shader> basicShader;
+	std::shared_ptr<Terrain> terrain;
 
 	int width;
 	int height;

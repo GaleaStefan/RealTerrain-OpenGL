@@ -22,5 +22,8 @@ private:
 	glm::vec3 position;
 	int terrainSize;
 	int chunkSize;
+
+private:
+	std::shared_ptr<Terrain> terrain;
 };
 
