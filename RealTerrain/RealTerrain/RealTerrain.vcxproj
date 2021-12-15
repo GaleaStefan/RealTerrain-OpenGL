@@ -177,6 +177,8 @@
     <None Include="BasicShader.frag" />
     <None Include="BasicShader.vert" />
     <None Include="heightmap.cfg" />
+    <None Include="Shaders\Main.frag" />
+    <None Include="Shaders\Main.vert" />
     <None Include="Shaders\Skybox.frag" />
     <None Include="Shaders\Skybox.vert" />
   </ItemGroup>

@@ -19,11 +19,8 @@ public:
 	float HeightAt(float worldX, float worldZ) const;
 private:
 	std::unordered_map<std::pair<int, int>, std::shared_ptr<TerrainChunk>, util::pair_hash> chunks;
-	glm::vec3 position;
 	int terrainSize;
-	int chunkSize;
-
-private:
-	std::shared_ptr<Terrain> terrain;
+	int chunkSize = 32;
+	int drawRadius = 16;
 };
 

@@ -2,15 +2,18 @@
 
 void Terrain::Draw(std::shared_ptr<Shader> shader, const glm::vec3& from) const
 {
+	std::pair<int, int> currentLocation = { from.x / chunkSize, from.z / chunkSize };
+
 	for (const auto& [location, chunk] : chunks)
-		chunk->Draw(shader);
+	{
+		if(glm::pow(currentLocation.first - location.first, 2) + 
+			glm::pow(currentLocation.second - location.second, 2) <= glm::pow(drawRadius, 2))
+			chunk->Draw(shader);
+	}
 }
 
 void Terrain::Generate(const HeightMap& map)
 {
-	//std::pair<float, float> center{ map.size.first / 2.f, map.size.second / 2.f };
-	position = glm::vec3{ 0.f, 0.f, 0.f };
-	chunkSize = 32;
 	terrainSize = map.size.first;
 
 	std::vector<Vertex> vertices;
@@ -41,7 +44,6 @@ void Terrain::Generate(const HeightMap& map)
 	// Calculate normals
 	for (size_t x = 0; x < map.size.first; x++)
 	{
-		// glm::normalize(glm::vec3((heightU - heightD), (heightU - heightD) * (heightR - heightL), (heightR - heightL)));
 		for (size_t z = 0; z < map.size.second; z++)
 		{
 			float heightLeft = getHeight(x, z - 1, map);
@@ -54,6 +56,7 @@ void Terrain::Generate(const HeightMap& map)
 		}
 	}
 
+	// Split to chuncks
 	for (int chunkRow = 0; chunkRow < map.size.first / chunkSize; chunkRow++)
 	{
 		for (int chunkCol = 0; chunkCol < map.size.second / chunkSize; chunkCol++)
@@ -82,13 +85,12 @@ void Terrain::Generate(const HeightMap& map)
 					std::get<3>(chunkBounds) - std::get<2>(chunkBounds) });
 		}
 	}
-
 }
 
 float Terrain::HeightAt(float worldX, float worldZ) const
 {
-	float offsetX = worldX - position.x;
-	float offsetZ = worldZ - position.z;
+	float offsetX = worldX;
+	float offsetZ = worldZ;
 
 	if (offsetX < 0 || offsetX >= terrainSize || offsetZ < 0 || offsetZ >= terrainSize)
 		return 0;

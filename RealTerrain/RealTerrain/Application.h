@@ -30,8 +30,9 @@ private:
 	GLFWwindow* window = nullptr;
 
 	std::shared_ptr<Camera> playerCam;
-	std::shared_ptr<Shader> basicShader;
+	//std::shared_ptr<Shader> basicShader;
 	std::shared_ptr<Shader> skyboxShader;
+	std::shared_ptr<Shader> mainShader;
 	std::shared_ptr<Terrain> terrain;
 	std::shared_ptr<CubeMap> skybox;
 

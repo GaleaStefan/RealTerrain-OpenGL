@@ -29,7 +29,8 @@ Application::Application()
 	glewInit();
 
 	playerCam = std::make_shared<Camera>(mode->width, mode->height, glm::vec3{ 0, 0, 1.f });
-	basicShader = std::make_shared<Shader>("BasicShader.vert", "BasicShader.frag");
+	//basicShader = std::make_shared<Shader>("BasicShader.vert", "BasicShader.frag");
+	mainShader = std::make_shared<Shader>("Shaders/Main.vert", "Shaders/Main.frag");
 	skyboxShader = std::make_shared<Shader>("Shaders/Skybox.vert", "Shaders/Skybox.frag");
 
 	HeightMap hmap;
@@ -88,7 +89,8 @@ void Application::Render()
 	playerCam->camSpeed = 50.f;
 	playerCam->position = { 10.f, 0.f, 10.f };
 
-	DiffuseLight testLight{ {500.f, 300.f, 500.f}, {1.f, 1.f, 1.f} };
+	//DiffuseLight testLight{ {500.f, 300.f, 500.f}, {1.f, 1.f, 1.f} };
+	DirectionalLight sunLight{ {0.f, -1.f, 0.f}, {1.f, 1.f, 1.f} };
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -110,19 +112,28 @@ void Application::Render()
 		if (initialPos.y < terrainHeight)
 			initialPos.y = terrainHeight + 2.f;
 
-		if (playerPos.y < initialPos.y)
+		if (playerPos.y < terrainHeight)
 			playerPos.y = initialPos.y;
 
-		basicShader->Use();
+		/*basicShader->Use();
 		basicShader->SetVec3("lightPosition", testLight.position);
 		basicShader->SetVec3("lightColor", testLight.color);
 		basicShader->SetVec3("objectColor", { 1.f, 1.0f, 1.f });
 
 		basicShader->SetMat4("model", glm::mat4(1));
 		basicShader->SetMat4("view", playerCam->GetViewMatrix());
-		basicShader->SetMat4("projection", playerCam->GetProjectionMatrix());
+		basicShader->SetMat4("projection", playerCam->GetProjectionMatrix());*/
 
-		terrain->Draw(basicShader, glm::vec3{ 0.f ,0.f, 0.f });
+		mainShader->Use();
+		mainShader->SetVec3("lightDirection", sunLight.direction);
+		mainShader->SetVec3("lightColor", sunLight.color);
+		mainShader->SetVec3("objectColor", { 1.f, 1.0f, 1.f });
+
+		mainShader->SetMat4("model", glm::mat4(1));
+		mainShader->SetMat4("view", playerCam->GetViewMatrix());
+		mainShader->SetMat4("projection", playerCam->GetProjectionMatrix());
+
+		terrain->Draw(mainShader, playerCam->GetPosition());
 		skybox->Draw(playerCam, skyboxShader);
 
 		glfwSwapBuffers(window);
