@@ -45,6 +45,9 @@
     <ClCompile Include="Terrain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vertex.h">
@@ -92,6 +95,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="heightmap.cfg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\Skybox.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\Skybox.frag">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

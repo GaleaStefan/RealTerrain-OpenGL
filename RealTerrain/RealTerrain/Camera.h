@@ -6,7 +6,7 @@ class Camera
 {
 private:
 	constexpr static float DEF_Z_NEAR = .1f;
-	constexpr static float DEF_Z_FAR = 500.f;
+	constexpr static float DEF_Z_FAR = 800.f;
 	constexpr static float DEF_YAW = -90.f;
 	constexpr static float DEF_PITCH = 0.f;
 	constexpr static float DEF_FOV = 45.f;

@@ -30,12 +30,25 @@ Application::Application()
 
 	playerCam = std::make_shared<Camera>(mode->width, mode->height, glm::vec3{ 0, 0, 1.f });
 	basicShader = std::make_shared<Shader>("BasicShader.vert", "BasicShader.frag");
+	skyboxShader = std::make_shared<Shader>("Shaders/Skybox.vert", "Shaders/Skybox.frag");
 
 	HeightMap hmap;
 	hmap.LoadFrom("heightmap");
 
 	terrain = std::make_shared<Terrain>();
 	terrain->Generate(hmap);
+
+	std::vector<std::string> faces = {
+		"Skybox/right.jpg",
+		"Skybox/left.jpg",
+		"Skybox/top.jpg",
+		"Skybox/bottom.jpg",
+		"Skybox/front.jpg",
+		"Skybox/back.jpg"
+	};
+
+	skybox = std::make_shared<CubeMap>();
+	skybox->Load(faces);
 }
 
 void Application::BindCallbacks()
@@ -66,8 +79,7 @@ void Application::Render()
 {
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	util::GlEnable(GL_CULL_FACE, GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
-	glShadeModel(GL_SMOOTH);
+	glDepthFunc(GL_LEQUAL);
 
 	deltaTime = 0;
 	lastFrame = 0;
@@ -76,7 +88,7 @@ void Application::Render()
 	playerCam->camSpeed = 50.f;
 	playerCam->position = { 10.f, 0.f, 10.f };
 
-	DiffuseLight testLight{ {500.f, 100.f, 500.f}, {1.f, 1.f, 1.f} };
+	DiffuseLight testLight{ {500.f, 300.f, 500.f}, {1.f, 1.f, 1.f} };
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -111,6 +123,7 @@ void Application::Render()
 		basicShader->SetMat4("projection", playerCam->GetProjectionMatrix());
 
 		terrain->Draw(basicShader, glm::vec3{ 0.f ,0.f, 0.f });
+		skybox->Draw(playerCam, skyboxShader);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

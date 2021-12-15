@@ -6,7 +6,7 @@
 #include <memory>
 
 #include "Camera.h"
-#include "Shader.h"
+#include "Texture.h"
 #include "Mesh.h"
 #include "GLUtils.h"
 #include "Terrain.h"
@@ -31,7 +31,9 @@ private:
 
 	std::shared_ptr<Camera> playerCam;
 	std::shared_ptr<Shader> basicShader;
+	std::shared_ptr<Shader> skyboxShader;
 	std::shared_ptr<Terrain> terrain;
+	std::shared_ptr<CubeMap> skybox;
 
 	int width;
 	int height;

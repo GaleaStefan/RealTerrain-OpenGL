@@ -157,6 +157,7 @@
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TerrainChunk.cpp" />
+    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -176,6 +177,8 @@
     <None Include="BasicShader.frag" />
     <None Include="BasicShader.vert" />
     <None Include="heightmap.cfg" />
+    <None Include="Shaders\Skybox.frag" />
+    <None Include="Shaders\Skybox.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
