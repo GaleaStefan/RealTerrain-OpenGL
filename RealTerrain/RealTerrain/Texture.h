@@ -14,7 +14,7 @@ struct CubeMap
 	bool loaded;
 	static float skyboxVertices[108];
 
-	CubeMap() : loaded(false), textureId(0), mapVAO(), mapVBO() {}
+	CubeMap() : textureId(0), mapVAO(), mapVBO(), loaded(false) {}
 
 	void Load(const std::vector<std::string>& images);
 	void Draw(std::shared_ptr<Camera> camera, std::shared_ptr<Shader> shader) const;

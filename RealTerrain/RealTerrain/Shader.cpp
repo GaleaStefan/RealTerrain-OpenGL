@@ -50,7 +50,7 @@ void Shader::Load(const std::string& vertShaderPath, const std::string& fragShad
 			std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: PROGRAM" << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
 		}
 	}
-	catch (std::exception(e))
+	catch (std::exception const& e)
 	{
 		std::cout << e.what() << '\n';
 	}
@@ -68,7 +68,7 @@ unsigned int Shader::LoadShader(const std::string& fileName, GLenum shaderType)
 
 		return shaderId;
 	}
-	catch (std::exception& e)
+	catch (std::exception const& e)
 	{
 		std::cout << e.what() << " |Shader:" << fileName << '\n';
 		throw;
@@ -87,7 +87,10 @@ const char* Shader::ReadFromFile(const std::string& file)
 
 	auto codeString = codeStream.str();
 	char* code = new char[codeString.size() + 1];
-	std::memcpy(code, codeString.c_str(), codeString.size() + 1);
+
+	std::copy(codeString.begin(), codeString.end(), code);
+	code[codeString.size()] = 0;
+
 	return code;
 }
 
@@ -104,7 +107,7 @@ void Shader::CompileShader(const char* code, unsigned int& newShaderId, GLenum s
 	if (!success)
 	{
 		glGetShaderInfoLog(newShaderId, 1024, NULL, infoLog);
-		std::cout << infoLog << '\n';
-		throw std::exception("Shader compilation error");
+		std::cerr << infoLog << '\n';
+		throw std::runtime_error("Shader compilation error");
 	}
 }

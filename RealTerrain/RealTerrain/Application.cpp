@@ -1,6 +1,6 @@
 #include "Application.h"
 #include <iostream>
-#include <exception>
+#include <stdexcept>
 #include <fstream>
 #include "Model.h"
 #include "HeightMap.h"
@@ -15,10 +15,10 @@ Application::Application()
 
 	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
-	window = glfwCreateWindow(mode->width, mode->height, "Game window", nullptr, nullptr);
+	window = glfwCreateWindow(mode->width, mode->height, "Game window", glfwGetPrimaryMonitor(), nullptr);
 
 	if (!window)
-		throw std::exception("Could not create window");
+		throw std::runtime_error("Could not create window");
 
 	width = mode->width;
 	height = mode->height;

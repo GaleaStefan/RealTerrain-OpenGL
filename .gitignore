@@ -348,3 +348,9 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Clangd compile-flags.txt
+compile_flags.txt
+
+# Vimspector config
+.vimspector.json

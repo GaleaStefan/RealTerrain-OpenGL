@@ -1,7 +1,7 @@
 #include "Texture.h"
 #include "../../_external/stb/stb_image.h"
 
-#include <exception>
+#include <stdexcept>
 
 float CubeMap::skyboxVertices[108] = {
     // positions          
@@ -61,10 +61,10 @@ void CubeMap::Load(const std::vector<std::string>& images)
 		uint8_t* data = stbi_load(image.c_str(), &width, &height, &channels, 0);
 
 		if (channels != 3)
-			throw std::exception(("Invalid cubemap face " + image + "! Expected RGB, got" + std::to_string(channels)).c_str());
+			throw std::runtime_error(("Invalid cubemap face " + image + "! Expected RGB, got" + std::to_string(channels)).c_str());
 		
 		if (!data)
-			throw std::exception("Could not read cubemap face");
+			throw std::runtime_error("Could not read cubemap face");
 
 		glTexImage2D(face++, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 		stbi_image_free(data);
@@ -92,7 +92,7 @@ void CubeMap::Load(const std::vector<std::string>& images)
 void CubeMap::Draw(std::shared_ptr<Camera> camera, std::shared_ptr<Shader> shader) const
 {
     if (!loaded)
-        throw std::exception("Cubemap not loaded");
+        throw std::runtime_error("Cubemap not loaded");
 
     /*glDisable(GL_DEPTH_TEST);
     glDepthMask(GL_FALSE);*/
