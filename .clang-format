@@ -1,0 +1,10 @@
+IndentWidth: 4
+AccessModifierOffset: -4
+BreakBeforeBraces: Allman
+AlignAfterOpenBracket: Align
+AllowShortIfStatementsOnASingleLine: false
+IndentCaseLabels: false
+ColumnLimit: 0
+PointerAlignment: Left
+Cpp11BracedListStyle: false
+ColumnLimit: 120

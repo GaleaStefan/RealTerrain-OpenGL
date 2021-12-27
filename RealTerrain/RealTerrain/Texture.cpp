@@ -3,8 +3,10 @@
 
 #include <stdexcept>
 
+// clang-format off
+
 float CubeMap::skyboxVertices[108] = {
-    // positions          
+    // positions
     -1.0f,  1.0f, -1.0f,
     -1.0f, -1.0f, -1.0f,
      1.0f, -1.0f, -1.0f,
@@ -48,33 +50,36 @@ float CubeMap::skyboxVertices[108] = {
      1.0f, -1.0f,  1.0f
 };
 
+// clang-format on
+
 void CubeMap::Load(const std::vector<std::string>& images)
 {
-	glGenTextures(1, &textureId);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, textureId);
+    glGenTextures(1, &textureId);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureId);
 
-	int width, height, channels;
-	GLenum face = GL_TEXTURE_CUBE_MAP_POSITIVE_X;
-	
-	for (const auto& image : images)
-	{
-		uint8_t* data = stbi_load(image.c_str(), &width, &height, &channels, 0);
+    int width, height, channels;
+    GLenum face = GL_TEXTURE_CUBE_MAP_POSITIVE_X;
 
-		if (channels != 3)
-			throw std::runtime_error(("Invalid cubemap face " + image + "! Expected RGB, got" + std::to_string(channels)).c_str());
-		
-		if (!data)
-			throw std::runtime_error("Could not read cubemap face");
+    for (const auto& image : images)
+    {
+        uint8_t* data = stbi_load(image.c_str(), &width, &height, &channels, 0);
 
-		glTexImage2D(face++, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		stbi_image_free(data);
-	}
+        if (channels != 3)
+            throw std::runtime_error(
+                ("Invalid cubemap face " + image + "! Expected RGB, got" + std::to_string(channels)).c_str());
 
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        if (!data)
+            throw std::runtime_error("Could not read cubemap face");
+
+        glTexImage2D(face++, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        stbi_image_free(data);
+    }
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
     glGenVertexArrays(1, &mapVAO);
     glGenBuffers(1, &mapVBO);
@@ -85,7 +90,7 @@ void CubeMap::Load(const std::vector<std::string>& images)
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-	
+
     loaded = true;
 }
 
