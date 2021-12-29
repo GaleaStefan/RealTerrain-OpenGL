@@ -72,7 +72,7 @@ void Application::BindCallbacks()
 
 void Application::Render()
 {
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     util::GlEnable(GL_CULL_FACE, GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
@@ -142,30 +142,7 @@ void Application::OnFrameBufferResize(int newWidth, int newHeight)
     height = newHeight;
 }
 
-void Application::OnMouseMove(float x, float y)
-{
-    float warpPoint = 30.f;
-    auto warp = [warpPoint](float current, float size)
-    {
-        if (current <= warpPoint)
-            return size - 2 * warpPoint;
-
-        if (current >= size - warpPoint)
-            return warpPoint * 2;
-
-        return current;
-    };
-
-    float newX = warp(x, width);
-
-    if (x != newX)
-    {
-        playerCam->lastX = newX;
-        glfwSetCursorPos(window, newX, y);
-        return;
-    }
-    playerCam->Look(x, y);
-}
+void Application::OnMouseMove(float x, float y) { playerCam->Look(x, y); }
 
 void Application::OnScroll(double x, double y) { playerCam->Zoom(y); }
 
