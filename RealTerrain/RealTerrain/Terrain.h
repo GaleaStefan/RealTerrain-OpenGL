@@ -22,5 +22,5 @@ private:
     std::unordered_map<std::pair<int, int>, std::shared_ptr<TerrainChunk>, util::pair_hash> chunks;
     int terrainSize;
     int chunkSize = 32;
-    int drawRadius = 16;
+    int drawRadius = 32;
 };

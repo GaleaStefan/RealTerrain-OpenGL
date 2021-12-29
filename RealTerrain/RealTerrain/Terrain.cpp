@@ -63,11 +63,10 @@ void Terrain::Generate(const HeightMap& map)
         for (int chunkCol = 0; chunkCol < map.size.second / chunkSize; chunkCol++)
         {
             std::vector<Vertex> chunkVertices;
-            std::tuple<int, int, int, int> chunkBounds =
-                std::make_tuple<int, int, int, int>(glm::clamp(chunkSize * chunkRow - 1, 0, map.size.first),
-                                                    (int)std::min(map.size.first, chunkSize * (chunkRow + 1)),
-                                                    glm::clamp(chunkSize * chunkCol - 1, 0, map.size.second),
-                                                    (int)std::min(map.size.second, chunkSize * (chunkCol + 1)));
+            std::tuple<int, int, int, int> chunkBounds = { glm::clamp(chunkSize * chunkRow - 1, 0, map.size.first),
+                                                           (int)std::min(map.size.first, chunkSize * (chunkRow + 1)),
+                                                           glm::clamp(chunkSize * chunkCol - 1, 0, map.size.second),
+                                                           (int)std::min(map.size.second, chunkSize * (chunkCol + 1)) };
 
             for (int x = std::get<0>(chunkBounds); x < std::get<1>(chunkBounds); x++)
             {
@@ -77,7 +76,7 @@ void Terrain::Generate(const HeightMap& map)
                 }
             }
 
-            chunks[std::make_pair(chunkRow, chunkCol)] =
+            chunks[{ chunkRow, chunkCol }] =
                 TerrainChunk::CreateFrom(chunkVertices, { std::get<1>(chunkBounds) - std::get<0>(chunkBounds),
                                                           std::get<3>(chunkBounds) - std::get<2>(chunkBounds) });
         }

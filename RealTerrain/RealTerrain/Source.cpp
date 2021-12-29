@@ -18,7 +18,7 @@ int main(int argc, char** argv)
         std::unique_ptr<Application> app = std::make_unique<Application>();
         app->Render();
     }
-    catch (std::exception e)
+    catch (std::exception const& e)
     {
         std::cout << e.what() << '\n';
     }
