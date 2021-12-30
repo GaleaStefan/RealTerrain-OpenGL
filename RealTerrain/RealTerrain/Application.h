@@ -35,6 +35,7 @@ private:
     std::shared_ptr<Shader> mainShader;
     std::shared_ptr<Terrain> terrain;
     std::shared_ptr<CubeMap> skybox;
+    std::shared_ptr<Mesh> flag;
 
     int width;
     int height;

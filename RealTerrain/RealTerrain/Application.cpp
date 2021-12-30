@@ -33,7 +33,17 @@ Application::Application()
     // basicShader = std::make_shared<Shader>("BasicShader.vert", "BasicShader.frag");
     mainShader = std::make_shared<Shader>("Shaders/Main.vert", "Shaders/Main.frag");
     skyboxShader = std::make_shared<Shader>("Shaders/Skybox.vert", "Shaders/Skybox.frag");
-
+    //flag = std::make_shared<Mesh>(
+    //    {//verticles
+    //        { /* pos */ { 0, 110, 0 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 1, 0, 0 }, /* text */ { 0, 0 } },
+    //        { /* pos */ { 10, 110, 0 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 1, 0, 0 }, /* text */ { 0, 0 } }
+    //    } 
+    //    ,
+    //    {//indices
+    //        0,1,2
+    //    }
+    //);
+    //constructie flag
     HeightMap hmap;
     hmap.LoadFrom("heightmap");
 
@@ -128,6 +138,7 @@ void Application::Render()
         mainShader->SetMat4("projection", playerCam->GetProjectionMatrix());
 
         terrain->Draw(mainShader, playerCam->GetPosition());
+        //aiic render ,normale 0 1 0
         skybox->Draw(playerCam, skyboxShader);
 
         glfwSwapBuffers(window);
