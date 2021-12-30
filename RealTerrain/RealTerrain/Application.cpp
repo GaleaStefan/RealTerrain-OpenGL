@@ -122,7 +122,6 @@ void Application::Render()
         mainShader->Use();
         mainShader->SetVec3("lightDirection", sunLight.direction);
         mainShader->SetVec3("lightColor", sunLight.color);
-        mainShader->SetVec3("objectColor", { 1.f, 1.0f, 1.f });
 
         mainShader->SetMat4("model", glm::mat4(1));
         mainShader->SetMat4("view", playerCam->GetViewMatrix());

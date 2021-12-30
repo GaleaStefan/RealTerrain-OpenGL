@@ -1,4 +1,5 @@
 #include "Terrain.h"
+#include "../../_external/color/src/color/color.hpp"
 
 void Terrain::Draw(std::shared_ptr<Shader> shader, const glm::vec3& from) const
 {
@@ -34,9 +35,14 @@ void Terrain::Generate(const HeightMap& map)
         for (size_t z = 0; z < map.size.second; z++)
         {
             float heightNormalized = map.heightMap[x][z] / (map.verticalBounds.second - map.verticalBounds.first);
+
+            float hue = (float)(x * map.size.second + z) / (map.size.first * map.size.second) * 360.f;
+            color::hsv<float> hsv({hue, 50.f, 50.f});
+            glm::vec3 color(color::get::red(hsv), color::get::green(hsv), color::get::blue(hsv));
+
             vertices.push_back({ { x, map.heightMap[x][z], z },
                                  { heightNormalized, 1.f - heightNormalized, 1.f },
-                                 { 1.f, 1.f, 1.f },
+                                 color,
                                  { (float)x / (float)map.size.first, (float)z / (float)map.size.second } });
         }
     }
@@ -69,12 +75,8 @@ void Terrain::Generate(const HeightMap& map)
                                                            (int)std::min(map.size.second, chunkSize * (chunkCol + 1)) };
 
             for (int x = std::get<0>(chunkBounds); x < std::get<1>(chunkBounds); x++)
-            {
                 for (int z = std::get<2>(chunkBounds); z < std::get<3>(chunkBounds); z++)
-                {
                     chunkVertices.push_back(vertices[x * map.size.second + z]);
-                }
-            }
 
             chunks[{ chunkRow, chunkCol }] =
                 TerrainChunk::CreateFrom(chunkVertices, { std::get<1>(chunkBounds) - std::get<0>(chunkBounds),
