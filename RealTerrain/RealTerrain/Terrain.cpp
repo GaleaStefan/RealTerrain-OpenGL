@@ -1,5 +1,5 @@
 #include "Terrain.h"
-#include "../../_external/color/src/color/color.hpp"
+#include <iostream>
 
 void Terrain::Draw(std::shared_ptr<Shader> shader, const glm::vec3& from) const
 {
@@ -12,6 +12,15 @@ void Terrain::Draw(std::shared_ptr<Shader> shader, const glm::vec3& from) const
             glm::pow(drawRadius, 2))
             chunk->Draw(shader);
     }
+}
+
+color::rgb<float> Terrain::GetColor(float height) const
+{
+    for (auto& terrainType : terrainTypes)
+        if (height <= terrainType.height)
+            return terrainType.color;
+
+    return color::constant::black_t{};
 }
 
 void Terrain::Generate(const HeightMap& map)
@@ -34,15 +43,18 @@ void Terrain::Generate(const HeightMap& map)
     {
         for (size_t z = 0; z < map.size.second; z++)
         {
-            float heightNormalized = map.heightMap[x][z] / (map.verticalBounds.second - map.verticalBounds.first);
+            float height = map.heightMap[x][z];
 
-            float hue = (float)(x * map.size.second + z) / (map.size.first * map.size.second) * 360.f;
-            color::hsv<float> hsv({hue, 50.f, 50.f});
-            glm::vec3 color(color::get::red(hsv), color::get::green(hsv), color::get::blue(hsv));
+            float heightNormalized = height / (map.verticalBounds.second - map.verticalBounds.first);
+
+            color::rgb<float> color = GetColor(height);
+            // float hue = (float)(x * map.size.second + z) / (map.size.first * map.size.second) * 360.f;
+            // color::hsv<float> hsv({hue, 50.f, 50.f});
+            glm::vec3 colorVec(color::get::red(color), color::get::green(color), color::get::blue(color));
 
             vertices.push_back({ { x, map.heightMap[x][z], z },
                                  { heightNormalized, 1.f - heightNormalized, 1.f },
-                                 color,
+                                 colorVec,
                                  { (float)x / (float)map.size.first, (float)z / (float)map.size.second } });
         }
     }
@@ -63,7 +75,7 @@ void Terrain::Generate(const HeightMap& map)
         }
     }
 
-    // Split to chuncks
+    // Split to chunks
     for (int chunkRow = 0; chunkRow < map.size.first / chunkSize; chunkRow++)
     {
         for (int chunkCol = 0; chunkCol < map.size.second / chunkSize; chunkCol++)
