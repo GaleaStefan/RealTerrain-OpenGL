@@ -35,12 +35,35 @@ Application::Application()
     skyboxShader = std::make_shared<Shader>("Shaders/Skybox.vert", "Shaders/Skybox.frag");
     //flag = std::make_shared<Mesh>(
     //    {//verticles
-    //        { /* pos */ { 0, 110, 0 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 1, 0, 0 }, /* text */ { 0, 0 } },
-    //        { /* pos */ { 10, 110, 0 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 1, 0, 0 }, /* text */ { 0, 0 } }
+    //        //stalp
+    //      { /* pos */ { 1058, 331, 51 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 1, 1, 1 }, /* text */ { 0, 0 } },
+    //      { /* pos */ { 1059, 331, 51 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 1, 1, 1 }, /* text */ { 0, 0 } },
+    //      { /* pos */ { 1059, 332, 51 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 1, 1, 1 }, /* text */ { 0, 0 } },
+    //      { /* pos */ { 1058, 332, 51 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 1, 1, 1 }, /* text */ { 0, 0 } },
+
+    //      { /* pos */ { 1058, 331, 55 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 1, 1, 1 }, /* text */ { 0, 0 } },
+    //      { /* pos */ { 1059, 331, 55 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 1, 1, 1 }, /* text */ { 0, 0 } },
+    //      { /* pos */ { 1059, 332, 55 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 1, 1, 1 }, /* text */ { 0, 0 } },
+    //      { /* pos */ { 1058, 332, 55 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 1, 1, 1 }, /* text */ { 0, 0 } },
+    //      //drapel
+    //      { /* pos */ { 1058, 331, 55 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 0, 0, 1 }, /* text */ { 0, 0 } },
+    //      { /* pos */ { 1058, 331, 54 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 0, 0, 1 }, /* text */ { 0, 0 } },
+    //      { /* pos */ { 1058, 332, 54 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 0, 0, 1 }, /* text */ { 0, 0 } },
+    //      { /* pos */ { 1058, 332, 55 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 0, 0, 1 }, /* text */ { 0, 0 } },
+
+    //      { /* pos */ { 1058, 332, 55 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 1, 1, 0 }, /* text */ { 0, 0 } },
+    //      { /* pos */ { 1058, 332, 54 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 1, 1, 0 }, /* text */ { 0, 0 } },
+    //      { /* pos */ { 1058, 333, 54 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 1, 1, 0 }, /* text */ { 0, 0 } },
+    //      { /* pos */ { 1058, 333, 55 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 1, 1, 0 }, /* text */ { 0, 0 } },
+
+    //      { /* pos */ { 1058, 333, 55 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 1, 0, 0 }, /* text */ { 0, 0 } },
+    //      { /* pos */ { 1058, 333, 54 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 1, 0, 0 }, /* text */ { 0, 0 } },
+    //      { /* pos */ { 1058, 334, 54 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 1, 0, 0 }, /* text */ { 0, 0 } },
+    //      { /* pos */ { 1058, 334, 55 }, /* normala */ { 0, 1, 0 }, /* culoare */ { 1, 0, 0 }, /* text */ { 0, 0 } }
     //    } 
     //    ,
     //    {//indices
-    //        0,1,2
+    //        1,2,6,1,6,5,2,3,6,6,7,3,3,4,7,7,8,4,1,4,8,5,8,1,9,10,11,9,11,12,13,14,15,13,15,16,17,18,19,17,19,20
     //    }
     //);
     //constructie flag
@@ -139,6 +162,7 @@ void Application::Render()
 
         terrain->Draw(mainShader, playerCam->GetPosition());
         //aiic render ,normale 0 1 0
+        
         skybox->Draw(playerCam, skyboxShader);
 
         glfwSwapBuffers(window);
